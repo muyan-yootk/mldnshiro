@@ -29,5 +29,8 @@ public class TestShiroIni {
 		subject.login(token);
 		// 7、如果成功登录了，则一定可以获取用户名
 		System.out.println(subject.getPrincipal()); // 用户名
+		System.out.println(subject.hasRole("dept"));
+		System.out.println(subject.hasRole("abc"));
+		System.out.println(subject.isPermitted("dept:add"));
 	}
 }
