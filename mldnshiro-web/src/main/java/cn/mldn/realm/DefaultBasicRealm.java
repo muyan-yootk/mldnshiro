@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -29,6 +30,7 @@ public class DefaultBasicRealm extends AuthorizingRealm {
 		if (!"java".equals(password)) {	// 密码错误
 			throw new IncorrectCredentialsException("【" + mid + "】错误的密码无法登录！");
 		}
+		SecurityUtils.getSubject().getSession().setAttribute("name", "小郭子-宝贝");
 		// 如果现在用户名和密码全部正确了，那么在此时就可以将用户输入的用户名和密码直接以认证信息的形式返回即可
 		return new SimpleAuthenticationInfo(token.getPrincipal(), token.getCredentials(), this.getName());
 	}
