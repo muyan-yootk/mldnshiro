@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 设置命名空间，可以与不同表的同类型操作进行区分，使用时以“空间名称.id”的方式调用 -->
+<mapper namespace="cn.mldn.provider.dao.IMemberDAO"> 
+	<sql id="selectBase">
+		SELECT mid,name,password,locked FROM member
+	</sql>
+	<select id="findById" resultType="Member" parameterType="String">
+		<include refid="selectBase"/>
+		where mid=#{mid} ; 
+	</select>
+</mapper> 

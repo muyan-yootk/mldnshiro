@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
+	
+	<!-- 2、追加一个映射配置转换的处理类 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="cn.mldn.provider.dao"/>	<!-- 设置包名称 -->
+		<property name="sqlSessionFactoryBeanName" value="sessionFactory"/>
+	</bean>
+	 
+	<!-- 1、定义MyBatis的SqlSessionFactoryBean对象实例，并且与mybatis.cfg.xml文件产生关联 -->
+	<bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"/>	<!-- 定义要使用的数据源 -->
+		<property name="configLocation" value="classpath:META-INF/mybatis/mybatis.cfg.xml"/>
+		<property name="mapperLocations" value="classpath:META-INF/mybatis/mapper/cn/mldn/mapping/*.xml"/>
+	</bean>   
+</beans>
