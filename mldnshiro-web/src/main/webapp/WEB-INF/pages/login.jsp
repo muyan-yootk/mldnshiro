@@ -11,7 +11,7 @@
 <%
 	String login_url = "login.action" ;
 %>
-${msg}
+<h1>${msg}</h1>
 <form action="<%=login_url%>" method="post">
 	用户名：<input type="text" name="mid" value="admin"><br>
 	密码：<input type="text" name="password" value="hello"><br>

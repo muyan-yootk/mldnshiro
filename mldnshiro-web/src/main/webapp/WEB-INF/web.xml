@@ -4,6 +4,31 @@
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
                       http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
 	version="4.0" metadata-complete="true">
+	
+	<listener>
+		<listener-class>
+			org.apache.shiro.web.env.EnvironmentLoaderListener
+		</listener-class>
+	</listener>
+
+	<filter>
+		<filter-name>ShiroFilter</filter-name>
+		<filter-class>
+			org.apache.shiro.web.servlet.ShiroFilter
+		</filter-class>
+		<init-param>	<!-- 配置shiro.ini文件路径 -->
+			<param-name>configPath</param-name>
+			<param-value>classpath:shiro.ini</param-value>
+		</init-param> 
+	</filter>
+	<filter-mapping>
+		<filter-name>ShiroFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>INCLUDE</dispatcher>
+		<dispatcher>ERROR</dispatcher>
+	</filter-mapping>
 
 	<error-page>
 		<error-code>500</error-code>
