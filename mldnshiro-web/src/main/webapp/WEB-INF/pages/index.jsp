@@ -12,7 +12,7 @@
 <h2>登录ID：<shiro:principal/>、真实姓名：${name}</h2>
 <shiro:hasRole name="dept"> 
 	<h2>用户具有部门管理角色！</h2>
-	<shiro:hasPermission name="dept:listabc">
+	<shiro:hasPermission name="dept:list">
 		<h3>拥有部门列表的权限！</h3>
 	</shiro:hasPermission>
 </shiro:hasRole>
