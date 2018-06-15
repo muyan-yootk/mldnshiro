@@ -5,13 +5,41 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">  
 	<context:component-scan base-package="cn.mldn"/>
+	<!-- 7、定义SessionID生成管理器 ，使用UUID的模式来生成-->
+	<bean id="sessionIdGenerator" 
+		class="org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator"/>
+	
+	<!-- 8、所有的SessionID一定要被服务器进行存储，所以定义Session存储工具类 -->
+	<bean id="sessionDAO" class="org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO">
+		<property name="sessionIdGenerator" ref="sessionIdGenerator"/>
+	</bean> 
+	
+	<!-- 9、SessionID需要保存在客户端浏览器的Cookie之中，定义一个Cookie存储配置 -->
+	<bean id="sessionIdCookie" 
+		class="org.apache.shiro.web.servlet.SimpleCookie">
+		<property name="name" value="mldn-session-id"/> <!-- Cookie保存名字 -->
+	</bean>
+	
+	<!-- 10、定义Session管理器，整合ID生成方案、Cookie存储方案 -->
+	<bean id="sessionManager" 
+		class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+		<property name="sessionDAO" ref="sessionDAO"/> <!-- 定义Session存储方案 -->
+		<property name="sessionIdCookie" ref="sessionIdCookie"/> <!-- 定义Cookie存储 -->
+		<!-- 定义session的超时时间，如果没有配置默认就是30分钟 -->
+		<property name="globalSessionTimeout" value="3000000"/>
+		<property name="deleteInvalidSessions" value="true"/> <!-- 允许删除无效Session -->
+		<property name="sessionIdCookieEnabled" value="true"/> <!-- 开启Cookie存储 -->
+	</bean>
+	
 	<!-- 1、在Spring之中配置Realm的程序类，这样就可以进行注入配置了 -->
 	<bean id="defaultRealm" class="cn.mldn.realm.DefaultBasicRealm"/>
+	
 	<!-- 2、在Shiro之中所有的认证管理配置都是交由SecurityManager类完成的，定义安全管理器 -->
 	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
 		<property name="realm" ref="defaultRealm"/>	<!-- 配置要使用的Realm -->
 		<property name="cacheManager" ref="cacheManager"/>
-	</bean>
+		<property name="sessionManager" ref="sessionManager"/>
+	</bean> 
 	<!-- 3、定义所有的过滤访问路径，此时的访问路径需要依赖shiro-spring -->
 	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
 		<property name="securityManager" ref="securityManager"/> <!-- 配置安全管理器 -->
