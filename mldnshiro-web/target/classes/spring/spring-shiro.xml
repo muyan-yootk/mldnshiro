@@ -29,10 +29,10 @@
 			<value>
 				/logout.shiro=logout
 				/loginShiro.action=authc
-				/pages/**=authc,roles[dept],perms[dept:list] 
 			</value>
 		</property>
 	</bean>
+	<!-- /pages/**=authc,roles[dept],perms[dept:list]  -->
 	
 	<!-- 4、追加一个表单登录认证过滤器，来代替原有的登录逻辑 -->
 	<bean id="formAuthenticationFilter" 

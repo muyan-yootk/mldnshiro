@@ -37,9 +37,9 @@
 				<prop key="org.springframework.web.multipart.MaxUploadSizeExceededException">
 					plugins/errors
 				</prop>
-				<prop key="org.springframework.web.util.NestedServletException">
+				<prop key="org.apache.shiro.authz.AuthorizationException">
 					plugins/errors
-				</prop>
+				</prop> 
 			</props>		
 		</property>	
 	</bean>
@@ -67,4 +67,16 @@
 	<mvc:resources location="/WEB-INF/images/" mapping="/images/**"/>
 	<mvc:resources location="/WEB-INF/bootstrap/" mapping="/bootstrap/**"/>
 	<mvc:resources location="/WEB-INF/css/" mapping="/mvccss/**"/> 
+	
+	
+	
+	<bean id="controllerDefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor" 
+		class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator">
+		<property name="proxyTargetClass" value="true"/> <!-- 开启代理操作 -->
+	</bean> 
+	
+	<bean id="controllerAuthorizationAttributeSourceAdvisor" 
+		class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+		<property name="securityManager" ref="securityManager"/>
+	</bean>
 </beans>
