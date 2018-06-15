@@ -9,38 +9,13 @@
 		<artifactId>mldnshiro</artifactId>
 		<version>0.0.1</version>
 	</parent>
-	<artifactId>mldnshiro-web</artifactId>
-	<name>mldnshiro-web</name>
+	<artifactId>mldnshiro-provider-dept</artifactId>
+	<name>mldnshiro-provider-dept</name>
 	<url>http://maven.apache.org</url>
-	<dependencies>
-		<dependency>
-			<groupId>org.apache.shiro</groupId>
-			<artifactId>shiro-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.shiro</groupId>
-			<artifactId>shiro-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.shiro</groupId>
-			<artifactId>shiro-spring</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>cn.mldn</groupId>
-			<artifactId>mldnshiro-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>cn.mldn</groupId>
-			<artifactId>mldnshiro-util</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-fileupload</groupId>
-			<artifactId>commons-fileupload</artifactId>
-		</dependency>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+<dependencies>
 		<dependency>
 			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache</artifactId>
@@ -76,6 +51,10 @@
 		<dependency>
 			<groupId>org.mybatis</groupId>
 			<artifactId>mybatis</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>cn.mldn</groupId>
+			<artifactId>mldnshiro-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -196,53 +175,48 @@
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-core</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-webmvc</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-beans</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context-support</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet.jsp</groupId>
-			<artifactId>jsp-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jstl</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.shiro</groupId>
-			<artifactId>shiro-web</artifactId>
-		</dependency>
 	</dependencies>
 	<build>
-		<finalName>shiro-web</finalName>
+		<finalName>mldndubbo-provider-message</finalName>
+		<resources>
+			<resource>
+				<!-- 此处的属性是profile中统一定义的路径的名称，不同的配置文件有不同的子目录 -->
+				<directory>${profile.dir}</directory>
+				<filtering>false</filtering>
+			</resource>
+			<resource>
+				<directory>${resources.dir}</directory>
+				<filtering>false</filtering>
+			</resource>
+		</resources>
+	<plugins>
+		<plugin>
+			<artifactId>maven-assembly-plugin</artifactId>
+			<configuration>
+				<descriptor>src/main/assembly/assembly.xml</descriptor><!--描述文件路径 -->
+			</configuration>
+			<executions>
+				<execution>
+					<id>make-assembly</id>
+					<phase>package</phase><!-- 绑定到package生命周期阶段上 -->
+					<goals>
+						<goal>single</goal><!-- 只运行一次 -->
+					</goals>
+				</execution>
+			</executions>
+		</plugin>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-jar-plugin</artifactId>
+			<!-- <version>${maven.jar.plugin.version}</version> -->
+			<configuration>
+				<encoding>${project.build.sourceEncoding}</encoding>
+				<excludes>
+					<exclude>config/</exclude>
+					<exclude>META-INF/</exclude> 
+				</excludes>
+			</configuration>
+		</plugin>
+	</plugins>
 	</build>
 </project>

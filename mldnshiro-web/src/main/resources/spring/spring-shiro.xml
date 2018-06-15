@@ -49,4 +49,5 @@
 		<property name="redirectUrl" value="/logoutInfo.action" />	<!-- 注销之后的跳转路径 -->
 	</bean>
 	
+	
 </beans>

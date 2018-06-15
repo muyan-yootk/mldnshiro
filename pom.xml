@@ -473,5 +473,6 @@
 		<module>mldnshiro-provider-authentication</module>
 		<module>mldnshiro-provider-authorization</module>
 		<module>mldnshiro-provider-client</module>
+		<module>mldnshiro-provider-dept</module>
 	</modules>
 </project>

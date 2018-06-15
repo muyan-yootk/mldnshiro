@@ -14,7 +14,8 @@
 <shiro:hasRole name="dept">  
 	<h2>用户具有部门管理角色！</h2>
 	<shiro:hasPermission name="dept:list">
-		<h3>拥有部门列表的权限！</h3>
+		<h3><a href="pages/admin/dept/list.action">查看部门列表</a>！</h3>
+		<h3><a href="pages/admin/dept/get.action?did=10">查看部门信息</a>！</h3>
 	</shiro:hasPermission>
 </shiro:hasRole>
 </body>
