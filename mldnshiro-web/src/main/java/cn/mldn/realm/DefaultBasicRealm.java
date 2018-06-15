@@ -20,6 +20,7 @@ import com.alibaba.dubbo.config.annotation.Reference;
 
 import cn.mldn.service.IMemberAuthorizationService;
 import cn.mldn.service.IMemberService;
+import cn.mldn.util.encrypt.EncryptUtil;
 import cn.mldn.vo.Member;
 // 固定的用户名和密码设置为：“mldn/java”，如果用户名不是mldn那么就表示用户不存在，密码不是java表示密码错误
 public class DefaultBasicRealm extends AuthorizingRealm {
@@ -34,7 +35,8 @@ public class DefaultBasicRealm extends AuthorizingRealm {
 		System.out.println("***************** 【1、DefaultBasicRealm - 认证检测】doGetAuthenticationInfo"); 
 		// 用户认证信息处理（如果要与RPC或者业务层相连接就在此处实现调用）
 		String mid = (String) token.getPrincipal() ;	// 获取用户名
-		String password = new String((char[]) token.getCredentials()); // 密码
+		// 对输入的密码进行加密处理操作。
+		String password = EncryptUtil.encrypt(new String((char[]) token.getCredentials()));
 		// 调用业务层中的方法进行认证检测，如果成功则返回name的数据
 		Member member = this.authcService.get(mid) ;	// 获取一个用户信息
 		if (member == null) {	// 用户名不存在
@@ -48,7 +50,7 @@ public class DefaultBasicRealm extends AuthorizingRealm {
 		}
 		SecurityUtils.getSubject().getSession().setAttribute("name", member.getName());
 		// 如果现在用户名和密码全部正确了，那么在此时就可以将用户输入的用户名和密码直接以认证信息的形式返回即可
-		return new SimpleAuthenticationInfo(token.getPrincipal(), token.getCredentials(), this.getName());
+		return new SimpleAuthenticationInfo(token.getPrincipal(), password, this.getName());
 	}
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {

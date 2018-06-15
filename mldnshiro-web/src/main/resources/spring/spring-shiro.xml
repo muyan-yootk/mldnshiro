@@ -47,7 +47,11 @@
 		
 	
 	<!-- 1、在Spring之中配置Realm的程序类，这样就可以进行注入配置了 -->
-	<bean id="defaultRealm" class="cn.mldn.realm.DefaultBasicRealm"/>
+	<bean id="defaultRealm" class="cn.mldn.realm.DefaultBasicRealm">
+		<property name="credentialsMatcher">
+			<bean class="cn.mldn.realm.matcher.DefaultCredentialsMatcher"/>
+		</property>
+	</bean>
 	
 	<!-- 2、在Shiro之中所有的认证管理配置都是交由SecurityManager类完成的，定义安全管理器 -->
 	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
