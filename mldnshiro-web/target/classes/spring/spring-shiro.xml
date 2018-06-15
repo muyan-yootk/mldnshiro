@@ -10,6 +10,7 @@
 	<!-- 2、在Shiro之中所有的认证管理配置都是交由SecurityManager类完成的，定义安全管理器 -->
 	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
 		<property name="realm" ref="defaultRealm"/>	<!-- 配置要使用的Realm -->
+		<property name="cacheManager" ref="cacheManager"/>
 	</bean>
 	<!-- 3、定义所有的过滤访问路径，此时的访问路径需要依赖shiro-spring -->
 	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
@@ -29,10 +30,10 @@
 			<value>
 				/logout.shiro=logout
 				/loginShiro.action=authc
+				/pages/**=authc,roles[dept],perms[dept:list]
 			</value>
 		</property>
 	</bean>
-	<!-- /pages/**=authc,roles[dept],perms[dept:list]  -->
 	
 	<!-- 4、追加一个表单登录认证过滤器，来代替原有的登录逻辑 -->
 	<bean id="formAuthenticationFilter" 
@@ -42,6 +43,11 @@
 		<!-- 定义该过滤器的访问路径，该访问路径和之前的跳转路径一致 -->
 		<property name="loginUrl" value="/loginShiro.action"/>
 		<property name="failureKeyAttribute" value="msg"/> <!-- 错误保存的属性名称 -->  
+	</bean>
+	
+	<!-- 6、追加Shiro中的缓存配置定义 -->
+	<bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+		<property name="cacheManagerConfigFile" value="classpath:shiro/ehcache.xml"/>
 	</bean>
 	
 	<!-- 5、追加登录注销的过滤器，由于所有的状态都由Shiro管理，所以注销的内容销毁也都由Shiro完成 -->
