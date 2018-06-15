@@ -23,9 +23,11 @@
 	该用户已经被锁定！
 </c:if> 
 </h1>
+${error}
 <form action="<%=login_url%>" method="post">
 	用户名：<input type="text" name="mid" value="admin"><br>
 	密码：<input type="text" name="password" value="hello"><br>
+	验证码：<input type="text" name="code" id="code"><img src="ImageCode"><br>
 	<input type="checkbox" name="rememberme" value="true"/>下次免登录<br>
 	<input type="submit" value="登录">
 </form>

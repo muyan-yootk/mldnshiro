@@ -10,7 +10,14 @@
 			org.apache.shiro.web.env.EnvironmentLoaderListener
 		</listener-class>
 	</listener> -->
-
+	<servlet>
+		<servlet-name>RandomCode</servlet-name>
+		<servlet-class>cn.mldn.util.web.RandomCode</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>RandomCode</servlet-name>
+		<url-pattern>/ImageCode</url-pattern>
+	</servlet-mapping>
 	<filter>
 		<filter-name>shiroFilter</filter-name>
 		<filter-class>

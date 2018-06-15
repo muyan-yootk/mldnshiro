@@ -85,13 +85,16 @@
 	
 	<!-- 4、追加一个表单登录认证过滤器，来代替原有的登录逻辑 -->
 	<bean id="formAuthenticationFilter" 
-		class="org.apache.shiro.web.filter.authc.FormAuthenticationFilter">
+		class="cn.mldn.filter.authc.DefaultFormAuthenticationFilter">
 		<property name="usernameParam" value="mid"/>	<!-- 定义接收参数名称 -->
 		<property name="passwordParam" value="password"/>	<!-- 定义接收参数名称 -->
 		<!-- 定义该过滤器的访问路径，该访问路径和之前的跳转路径一致 -->
 		<property name="loginUrl" value="/loginShiro.action"/>
 		<property name="rememberMeParam" value="rememberme"/>
-		<property name="failureKeyAttribute" value="msg"/> <!-- 错误保存的属性名称 -->  
+		<property name="failureKeyAttribute" value="msg"/> <!-- 错误保存的属性名称 -->
+		<property name="codeParam" value="code"/>	<!-- 表单中的验证码的参数名称 -->
+		<property name="randName" value="rand"/>	<!-- session中保存的验证码的名称 -->
+		<property name="randMessageKeyAttribute" value="error"/> <!-- request属性名称，保存验证码错误 -->  
 	</bean>
 	
 	<!-- 6、追加Shiro中的缓存配置定义 -->
