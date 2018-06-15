@@ -467,5 +467,6 @@
 		<module>mldnshiro-web</module>
 		<module>mldnshiro-provider-authentication</module>
 		<module>mldnshiro-provider-authorization</module>
+		<module>mldnshiro-provider-client</module>
 	</modules>
 </project>
