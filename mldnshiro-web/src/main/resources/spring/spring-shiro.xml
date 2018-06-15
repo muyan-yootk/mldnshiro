@@ -21,10 +21,13 @@
 			<map>	<!-- 注册定义好的过滤器，这样就将过滤器与整个Shiro整合在一起 -->
 				<!-- authc描述的是进行认证检测的路径标记，此时相当于替换了原始的定义 -->
 				<entry key="authc" value-ref="formAuthenticationFilter"/>
+				<!-- 追加logout的过滤器配置 -->
+				<entry key="logout" value-ref="logoutFilter"/>
 			</map>
 		</property>
 		<property name="filterChainDefinitions">
 			<value>
+				/logout.shiro=logout
 				/loginShiro.action=authc
 				/pages/**=authc,roles[dept],perms[dept:list] 
 			</value>
@@ -40,4 +43,10 @@
 		<property name="loginUrl" value="/loginShiro.action"/>
 		<property name="failureKeyAttribute" value="msg"/> <!-- 错误保存的属性名称 -->  
 	</bean>
+	
+	<!-- 5、追加登录注销的过滤器，由于所有的状态都由Shiro管理，所以注销的内容销毁也都由Shiro完成 -->
+	<bean id="logoutFilter" class="org.apache.shiro.web.filter.authc.LogoutFilter">
+		<property name="redirectUrl" value="/logoutInfo.action" />	<!-- 注销之后的跳转路径 -->
+	</bean>
+	
 </beans>

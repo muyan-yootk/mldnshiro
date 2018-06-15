@@ -17,4 +17,8 @@ public class GlobalAction {
 	public String unauthz() {
 		return "plugins/unauthz" ;
 	} 
+	@RequestMapping("/logoutInfo")
+	public String logoutInf() {
+		return "logout" ;
+	} 
 }
