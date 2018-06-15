@@ -14,12 +14,30 @@
 	<!-- 3、定义所有的过滤访问路径，此时的访问路径需要依赖shiro-spring -->
 	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
 		<property name="securityManager" ref="securityManager"/> <!-- 配置安全管理器 -->
-		<property name="loginUrl" value="/login_pre.action"/>	<!-- 登录失败页面 -->
+		<property name="loginUrl" value="/loginShiro.action"/>	<!-- 登录失败页面 -->
 		<property name="unauthorizedUrl" value="/unauthz.action"/>	<!-- 授权失败 -->
+		<property name="successUrl" value="/pages/index.action"/>	<!-- 登录成功页 -->
+		<property name="filters">	<!-- 配置所有要使用的过滤器 -->
+			<map>	<!-- 注册定义好的过滤器，这样就将过滤器与整个Shiro整合在一起 -->
+				<!-- authc描述的是进行认证检测的路径标记，此时相当于替换了原始的定义 -->
+				<entry key="authc" value-ref="formAuthenticationFilter"/>
+			</map>
+		</property>
 		<property name="filterChainDefinitions">
 			<value>
+				/loginShiro.action=authc
 				/pages/**=authc,roles[dept],perms[dept:list] 
 			</value>
 		</property>
+	</bean>
+	
+	<!-- 4、追加一个表单登录认证过滤器，来代替原有的登录逻辑 -->
+	<bean id="formAuthenticationFilter" 
+		class="org.apache.shiro.web.filter.authc.FormAuthenticationFilter">
+		<property name="usernameParam" value="mid"/>	<!-- 定义接收参数名称 -->
+		<property name="passwordParam" value="password"/>	<!-- 定义接收参数名称 -->
+		<!-- 定义该过滤器的访问路径，该访问路径和之前的跳转路径一致 -->
+		<property name="loginUrl" value="/loginShiro.action"/>
+		<property name="failureKeyAttribute" value="msg"/> <!-- 错误保存的属性名称 -->  
 	</bean>
 </beans>

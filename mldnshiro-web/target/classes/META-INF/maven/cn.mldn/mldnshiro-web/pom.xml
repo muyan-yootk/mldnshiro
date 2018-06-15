@@ -245,5 +245,4 @@
 	<build>
 		<finalName>shiro-web</finalName>
 	</build>
-	<packaging>war</packaging>
 </project>

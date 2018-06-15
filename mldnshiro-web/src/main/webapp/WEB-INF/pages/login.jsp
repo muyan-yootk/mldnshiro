@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -9,9 +10,19 @@
 </head>
 <body>
 <%
-	String login_url = "login.action" ;
+	String login_url = "loginShiro.action" ;
 %>
-<h1>${msg}</h1>
+<h1>
+<c:if test="${msg == 'org.apache.shiro.authc.IncorrectCredentialsException'}">
+	登录密码错误！
+</c:if>
+<c:if test="${msg == 'org.apache.shiro.authc.UnknownAccountException'}">
+	该用户名不存在！
+</c:if>
+<c:if test="${msg == 'org.apache.shiro.authc.LockedAccountException'}">
+	该用户已经被锁定！
+</c:if> 
+</h1>
 <form action="<%=login_url%>" method="post">
 	用户名：<input type="text" name="mid" value="admin"><br>
 	密码：<input type="text" name="password" value="hello"><br>

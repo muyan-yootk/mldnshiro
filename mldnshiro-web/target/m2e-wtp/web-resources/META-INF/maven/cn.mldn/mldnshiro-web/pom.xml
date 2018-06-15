@@ -10,7 +10,6 @@
 		<version>0.0.1</version>
 	</parent>
 	<artifactId>mldnshiro-web</artifactId>
-	<packaging>war</packaging>
 	<name>mldnshiro-web</name>
 	<url>http://maven.apache.org</url>
 	<dependencies>
@@ -246,4 +245,5 @@
 	<build>
 		<finalName>shiro-web</finalName>
 	</build>
+	<packaging>war</packaging>
 </project>
