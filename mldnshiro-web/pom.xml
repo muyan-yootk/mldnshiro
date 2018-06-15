@@ -19,6 +19,14 @@
 			<artifactId>shiro-core</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-spring</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>cn.mldn</groupId>
 			<artifactId>mldnshiro-api</artifactId>
 		</dependency>

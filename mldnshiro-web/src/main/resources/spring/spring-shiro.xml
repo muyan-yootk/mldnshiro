@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">  
+	<context:component-scan base-package="cn.mldn"/>
+	<!-- 1、在Spring之中配置Realm的程序类，这样就可以进行注入配置了 -->
+	<bean id="defaultRealm" class="cn.mldn.realm.DefaultBasicRealm"/>
+	<!-- 2、在Shiro之中所有的认证管理配置都是交由SecurityManager类完成的，定义安全管理器 -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="defaultRealm"/>	<!-- 配置要使用的Realm -->
+	</bean>
+	<!-- 3、定义所有的过滤访问路径，此时的访问路径需要依赖shiro-spring -->
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager"/> <!-- 配置安全管理器 -->
+		<property name="loginUrl" value="/login_pre.action"/>	<!-- 登录失败页面 -->
+		<property name="unauthorizedUrl" value="/unauthz.action"/>	<!-- 授权失败 -->
+		<property name="filterChainDefinitions">
+			<value>
+				/pages/**=authc,roles[dept],perms[dept:list] 
+			</value>
+		</property>
+	</bean>
+</beans>

@@ -7,9 +7,9 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
 		http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
 	<!-- 定义本次Dubbo服务的提供者的应用程序名称 -->
-	<!-- <dubbo:application name="${dubbo.application.name}" version="${dubbo.interface.version}"/> -->
+	<dubbo:application name="${dubbo.application.name}" version="${dubbo.interface.version}"/>
 	<!-- 在进行Dubbo服务注册的时候一定要将服务注册到ZooKeeper之中 -->
-	<!-- <dubbo:registry protocol="zookeeper" address="${dubbo.registry.address}" timeout="${dubbo.provider.timeout}"/> -->
+	<dubbo:registry protocol="zookeeper" address="${dubbo.registry.address}" timeout="${dubbo.provider.timeout}"/>
 	<!-- 通过注册中心去引入远程接口实现类 -->
 	<!-- <dubbo:reference id="messageInstance"
 		interface="cn.mldn.mldndubbo.service.IMessageService"
@@ -29,6 +29,6 @@
 		cluster="forking" mock="return null" check="false"/> -->
 	<!-- 配置Dubbo监控程序的监控地址 -->
 <!-- 	<dubbo:monitor address="${dubbo.monitor.address}"/> -->
-	<!-- <dubbo:annotation package="cn.mldn.action"/> -->
+	<dubbo:annotation package="cn.mldn"/>
 
 </beans>

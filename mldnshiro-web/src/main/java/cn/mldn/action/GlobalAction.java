@@ -13,4 +13,8 @@ public class GlobalAction {
 	public String forward() {
 		return "plugins/forward" ;
 	} 
+	@RequestMapping("/unauthz")
+	public String unauthz() {
+		return "plugins/unauthz" ;
+	} 
 }

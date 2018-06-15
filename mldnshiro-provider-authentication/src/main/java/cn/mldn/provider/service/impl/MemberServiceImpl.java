@@ -14,7 +14,13 @@ import cn.mldn.vo.Member;
 @Service
 public class MemberServiceImpl implements IMemberService {
 	@Autowired
-	private IMemberDAO memberDAO ; 
+	private IMemberDAO memberDAO ;
+	
+	@Override
+	public Member get(String mid) {
+		return this.memberDAO.findById(mid);
+	}
+	
 	@Override
 	public Map<String, Object> login(String mid, String password){
 		Map<String,Object> map = new HashMap<String,Object>() ;
