@@ -31,6 +31,21 @@
 		<property name="sessionIdCookieEnabled" value="true"/> <!-- 开启Cookie存储 -->
 	</bean>
 	
+	<!-- 11、定义一个RememberMe的存储Cookie操作 -->
+	<bean id="remembermeCookie" 
+		class="org.apache.shiro.web.servlet.SimpleCookie">
+		<property name="name" value="mldn-rememberme"/>	<!-- 定义Cookie名字 -->
+		<property name="path" value="/"/>	<!-- 定义根路径为保存路径 -->
+		<property name="maxAge" value="2592000"/>	<!-- 30天内免登录 -->
+	</bean> 
+	
+	<!-- 12、定义Cookie管理器 -->
+	<bean id="remembermeCookieManager"
+		class="org.apache.shiro.web.mgt.CookieRememberMeManager">
+		<property name="cookie" ref="remembermeCookie"/> <!-- 配置Cookie策略 -->	
+	</bean>
+		
+	
 	<!-- 1、在Spring之中配置Realm的程序类，这样就可以进行注入配置了 -->
 	<bean id="defaultRealm" class="cn.mldn.realm.DefaultBasicRealm"/>
 	
@@ -39,6 +54,7 @@
 		<property name="realm" ref="defaultRealm"/>	<!-- 配置要使用的Realm -->
 		<property name="cacheManager" ref="cacheManager"/>
 		<property name="sessionManager" ref="sessionManager"/>
+		<property name="rememberMeManager" ref="remembermeCookieManager"/>
 	</bean> 
 	<!-- 3、定义所有的过滤访问路径，此时的访问路径需要依赖shiro-spring -->
 	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
@@ -58,7 +74,7 @@
 			<value>
 				/logout.shiro=logout
 				/loginShiro.action=authc
-				/pages/**=authc,roles[dept],perms[dept:list]
+				/pages/**=user,roles[dept],perms[dept:list]
 			</value>
 		</property>
 	</bean>
@@ -70,6 +86,7 @@
 		<property name="passwordParam" value="password"/>	<!-- 定义接收参数名称 -->
 		<!-- 定义该过滤器的访问路径，该访问路径和之前的跳转路径一致 -->
 		<property name="loginUrl" value="/loginShiro.action"/>
+		<property name="rememberMeParam" value="rememberme"/>
 		<property name="failureKeyAttribute" value="msg"/> <!-- 错误保存的属性名称 -->  
 	</bean>
 	
