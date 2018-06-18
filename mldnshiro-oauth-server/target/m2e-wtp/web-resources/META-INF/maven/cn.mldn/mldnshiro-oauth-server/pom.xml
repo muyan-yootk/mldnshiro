@@ -13,6 +13,21 @@
 	<name>mldnshiro-oauth-server</name>
 	<url>http://maven.apache.org</url>
 	<dependencies>
+
+
+		<dependency>
+			<groupId>org.apache.oltu.oauth2</groupId>
+			<artifactId>org.apache.oltu.oauth2.client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.oltu.oauth2</groupId>
+			<artifactId>org.apache.oltu.oauth2.authzserver</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.oltu.oauth2</groupId>
+			<artifactId>org.apache.oltu.oauth2.resourceserver</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>org.apache.shiro</groupId>
 			<artifactId>shiro-quartz</artifactId>
@@ -264,7 +279,7 @@
 		</dependency>
 	</dependencies>
 	<build>
-		<finalName>shiro-web</finalName>
+		<finalName>oauth-server</finalName>
 	</build>
 	<packaging>war</packaging>
 </project>

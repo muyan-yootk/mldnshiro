@@ -2,7 +2,7 @@ package cn.mldn.provider.service.impl;
 
 import javax.annotation.Resource;
 
-import org.springframework.stereotype.Service;
+import com.alibaba.dubbo.config.annotation.Service;
 
 import cn.mldn.provider.dao.IClientDAO;
 import cn.mldn.service.IClientService;

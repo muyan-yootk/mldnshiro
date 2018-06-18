@@ -13,5 +13,6 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">  
 	<context:component-scan base-package="cn.mldn.action"/>
 	<context:property-placeholder location="classpath:config/*.properties"/>
-	<import resource="classpath:spring/spring-redis.xml"/>
+	<!-- <import resource="classpath:spring/spring-redis.xml"/> -->
+	<import resource="classpath:spring/spring-dubbo-consumer.xml"/>
 </beans>
