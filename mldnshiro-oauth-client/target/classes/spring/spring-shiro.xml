@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">  
+	<context:component-scan base-package="cn.mldn"/>
+	<!-- 7、定义SessionID生成管理器 ，使用UUID的模式来生成-->
+	<bean id="sessionIdGenerator" 
+		class="org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator"/>
+	
+	<!-- 8、所有的SessionID一定要被服务器进行存储，所以定义Session存储工具类 -->
+	<bean id="sessionDAO" class="org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO">
+		<property name="sessionIdGenerator" ref="sessionIdGenerator"/>
+		<!-- 定义Session缓存处理的名字，该名称可以自动在缓存管理器之中进行配置 -->
+		<property name="activeSessionsCacheName" value="activeSessionCache"/>
+		<property name="cacheManager" ref="cacheManager"/>
+	</bean>  
+	
+	<!-- 9、SessionID需要保存在客户端浏览器的Cookie之中，定义一个Cookie存储配置 -->
+	<bean id="sessionIdCookie" 
+		class="org.apache.shiro.web.servlet.SimpleCookie">
+		<property name="name" value="mldn-session-id"/> <!-- Cookie保存名字 -->
+	</bean>
+	
+	<!-- 10、定义Session管理器，整合ID生成方案、Cookie存储方案 -->
+	<bean id="sessionManager" 
+		class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+		<property name="sessionDAO" ref="sessionDAO"/> <!-- 定义Session存储方案 -->
+		<property name="sessionIdCookie" ref="sessionIdCookie"/> <!-- 定义Cookie存储 -->
+		<!-- 定义session的超时时间，如果没有配置默认就是30分钟 -->
+		<property name="globalSessionTimeout" value="3000000"/>
+		<property name="deleteInvalidSessions" value="true"/> <!-- 允许删除无效Session -->
+		<property name="sessionIdCookieEnabled" value="true"/> <!-- 开启Cookie存储 -->
+	</bean>
+	
+	<!-- 11、定义一个RememberMe的存储Cookie操作 -->
+	<bean id="remembermeCookie" 
+		class="org.apache.shiro.web.servlet.SimpleCookie">
+		<property name="name" value="mldn-rememberme"/>	<!-- 定义Cookie名字 -->
+		<property name="path" value="/"/>	<!-- 定义根路径为保存路径 -->
+		<property name="maxAge" value="2592000"/>	<!-- 30天内免登录 -->
+	</bean> 
+	
+	<!-- 12、定义Cookie管理器 -->
+	<bean id="remembermeCookieManager"
+		class="org.apache.shiro.web.mgt.CookieRememberMeManager">
+		<property name="cookie" ref="remembermeCookie"/> <!-- 配置Cookie策略 -->	
+	</bean>
+		
+	
+	<!-- 1、在Spring之中配置Realm的程序类，这样就可以进行注入配置了 -->
+	<bean id="defaultRealm" class="cn.mldn.realm.DefaultBasicRealm">
+		<property name="credentialsMatcher">
+			<bean class="cn.mldn.realm.matcher.DefaultCredentialsMatcher">
+				<property name="expire" value="${shiro.retry.expire}"/>
+				<property name="maxRetryCount" value="${shiro.retry.max}"/>
+				<property name="cacheManager" ref="cacheManager"/>
+			</bean>
+		</property>
+		<property name="authenticationCacheName" value="authenticationCache"/>
+		<property name="authorizationCacheName" value="authorizationCache"/>
+		<property name="authenticationCachingEnabled" value="true"/>
+		<property name="authorizationCachingEnabled" value="true"/>
+		<property name="cacheManager" ref="cacheManager"/>
+		<property name="maxRetryCount" value="${shiro.retry.max}"/>
+	</bean> 
+	 
+	<!-- 2、在Shiro之中所有的认证管理配置都是交由SecurityManager类完成的，定义安全管理器 -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="defaultRealm"/>	<!-- 配置要使用的Realm -->
+		<property name="cacheManager" ref="cacheManager"/>
+		<property name="sessionManager" ref="sessionManager"/>
+		<property name="rememberMeManager" ref="remembermeCookieManager"/>
+	</bean> 
+	<!-- 3、定义所有的过滤访问路径，此时的访问路径需要依赖shiro-spring -->
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager"/> <!-- 配置安全管理器 -->
+		<property name="loginUrl" value="/loginShiro.action"/>	<!-- 登录失败页面 -->
+		<property name="unauthorizedUrl" value="/unauthz.action"/>	<!-- 授权失败 -->
+		<property name="successUrl" value="/pages/index.action"/>	<!-- 登录成功页 -->
+		<property name="filters">	<!-- 配置所有要使用的过滤器 -->
+			<map>	<!-- 注册定义好的过滤器，这样就将过滤器与整个Shiro整合在一起 -->
+				<!-- authc描述的是进行认证检测的路径标记，此时相当于替换了原始的定义 -->
+				<entry key="authc" value-ref="formAuthenticationFilter"/>
+				<!-- 追加logout的过滤器配置 -->
+				<entry key="logout" value-ref="logoutFilter"/>
+				<!-- 追加重复登录的并发剔除过滤器 -->
+				<entry key="kickout" value-ref="kickoutFilter"/>
+			</map>
+		</property>
+		<property name="filterChainDefinitions">
+			<value>
+				/logout.shiro=logout
+				/loginShiro.action=authc
+				/pages/**=kickout,user,roles[dept],perms[dept:list]
+			</value>
+		</property>
+	</bean> 
+	
+	<!-- 13、配置剔除的过滤器 -->
+	<bean id="kickoutFilter" class="cn.mldn.filter.authc.KickoutSessionControlFilter">
+		<property name="cacheManager" ref="cacheManager"/>
+		<property name="sessionManager" ref="sessionManager"/>
+		<property name="kickoutUrl" value="/loginShiro.action"/>
+		<property name="maxSessionCount" value="1"/> 
+	</bean>
+	
+	<!-- 4、追加一个表单登录认证过滤器，来代替原有的登录逻辑 -->
+	<bean id="formAuthenticationFilter" 
+		class="cn.mldn.filter.authc.DefaultFormAuthenticationFilter">
+		<property name="usernameParam" value="mid"/>	<!-- 定义接收参数名称 -->
+		<property name="passwordParam" value="password"/>	<!-- 定义接收参数名称 -->
+		<!-- 定义该过滤器的访问路径，该访问路径和之前的跳转路径一致 -->
+		<property name="loginUrl" value="/loginShiro.action"/>
+		<property name="rememberMeParam" value="rememberme"/>
+		<property name="failureKeyAttribute" value="msg"/> <!-- 错误保存的属性名称 -->
+		<property name="codeParam" value="code"/>	<!-- 表单中的验证码的参数名称 -->
+		<property name="randName" value="rand"/>	<!-- session中保存的验证码的名称 -->
+		<property name="randMessageKeyAttribute" value="error"/> <!-- request属性名称，保存验证码错误 -->  
+	</bean>
+	
+	<!-- 6、追加Shiro中的缓存配置定义，此时的CacheManager为本项目单独配置 -->
+	<bean id="cacheManager" class="cn.mldn.util.cache.shiro.manager.RedisCacheManager">
+		<property name="connectionFactoryMap">
+			<map>
+				<entry key="activeSessionCache" value-ref="sessionJedisConnectionFactory"/>
+				<entry key="authenticationCache" value-ref="authcJedisConnectionFactory"/>
+				<entry key="authorizationCache" value-ref="authzJedisConnectionFactory"/>
+				<entry key="retryCache" value-ref="retryJedisConnectionFactory"/>
+				<entry key="kickoutCache" value-ref="kickoutJedisConnectionFactory"/>
+			</map>
+		</property>
+	</bean>
+	
+	<!-- 5、追加登录注销的过滤器，由于所有的状态都由Shiro管理，所以注销的内容销毁也都由Shiro完成 -->
+	<bean id="logoutFilter" class="org.apache.shiro.web.filter.authc.LogoutFilter">
+		<property name="redirectUrl" value="/logoutInfo.action" />	<!-- 注销之后的跳转路径 -->
+	</bean>
+	
+	
+</beans>
