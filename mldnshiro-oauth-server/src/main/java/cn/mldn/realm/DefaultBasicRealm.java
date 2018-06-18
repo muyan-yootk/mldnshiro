@@ -27,8 +27,6 @@ import cn.mldn.vo.Member;
 public class DefaultBasicRealm extends AuthorizingRealm {
 	@Reference
 	private IMemberService authcService ;
-	@Reference
-	private IMemberAuthorizationService authzService ;
 	private Cache<Object,Object> cache = null ;
 	private int maxRetryCount = 5 ; // 设置默认的尝试次数
 	public void setMaxRetryCount(int maxRetryCount) {
@@ -74,11 +72,7 @@ public class DefaultBasicRealm extends AuthorizingRealm {
 		// 用户登录认证的时候需要用户名和密码，但是用户授权信息获取的时候只需要用户名即可
 		String mid = (String) principals.getPrimaryPrincipal() ; // 获取用户名
 		System.out.println("***************** 【2、DefaultBasicRealm - 授权检测】doGetAuthorizationInfo，用户名：" + mid);
-		Map<String, Object> map = this.authzService.listByMember(mid) ; // 获取全部的授权信息（角色与权限）
 		SimpleAuthorizationInfo authz = new SimpleAuthorizationInfo() ;
-		// 实际的开发应该通过业务层获取所有的角色信息
-		authz.setRoles((Set<String>) map.get("allRoles")); // 保存角色，保存到Shiro自己的管理机制里
-		authz.setStringPermissions((Set<String>) map.get("allActions")); // 保存权限信息
 		return authz ; 
 	} 
 
