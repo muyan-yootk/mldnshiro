@@ -50,7 +50,7 @@
 		
 	
 	<!-- 1、在Spring之中配置Realm的程序类，这样就可以进行注入配置了 -->
-	<bean id="defaultRealm" class="cn.mldn.realm.DefaultBasicRealm">
+<!-- 	<bean id="defaultRealm" class="cn.mldn.realm.DefaultBasicRealm">
 		<property name="credentialsMatcher">
 			<bean class="cn.mldn.realm.matcher.DefaultCredentialsMatcher">
 				<property name="expire" value="${shiro.retry.expire}"/>
@@ -64,6 +64,18 @@
 		<property name="authorizationCachingEnabled" value="true"/>
 		<property name="cacheManager" ref="cacheManager"/>
 		<property name="maxRetryCount" value="${shiro.retry.max}"/>
+	</bean>  -->
+	 
+	<bean id="defaultRealm" class="cn.mldn.realm.OAuthRealm">
+		<property name="accessTokenUrl" value="${oauth.token.url}"/>
+		<property name="clientId" value="${oauth.client.id}"/>
+		<property name="clientSecret" value="${oauth.client.secret}"/>
+		<property name="redirectUri" value="${oauth.redirect.uri}"/>
+		<property name="memberInfoUrl" value="${oauth.member.url}"/>
+		<property name="authenticationCacheName" value="authenticationCache"/>
+		<property name="authorizationCacheName" value="authorizationCache"/>
+		<property name="authenticationCachingEnabled" value="true"/>
+		<property name="authorizationCachingEnabled" value="true"/>
 	</bean> 
 	 
 	<!-- 2、在Shiro之中所有的认证管理配置都是交由SecurityManager类完成的，定义安全管理器 -->
@@ -76,7 +88,7 @@
 	<!-- 3、定义所有的过滤访问路径，此时的访问路径需要依赖shiro-spring -->
 	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
 		<property name="securityManager" ref="securityManager"/> <!-- 配置安全管理器 -->
-		<property name="loginUrl" value="/loginShiro.action"/>	<!-- 登录失败页面 -->
+		<property name="loginUrl" value="${oauth.login.url}"/>	<!-- 登录失败页面 -->
 		<property name="unauthorizedUrl" value="/unauthz.action"/>	<!-- 授权失败 -->
 		<property name="successUrl" value="/pages/index.action"/>	<!-- 登录成功页 -->
 		<property name="filters">	<!-- 配置所有要使用的过滤器 -->
@@ -85,15 +97,14 @@
 				<entry key="authc" value-ref="formAuthenticationFilter"/>
 				<!-- 追加logout的过滤器配置 -->
 				<entry key="logout" value-ref="logoutFilter"/>
-				<!-- 追加重复登录的并发剔除过滤器 -->
-				<entry key="kickout" value-ref="kickoutFilter"/>
+				<entry key="oauthAuthc" value-ref="oauthFilter"/>
 			</map>
 		</property>
 		<property name="filterChainDefinitions">
 			<value>
 				/logout.shiro=logout
-				/loginShiro.action=authc
-				/pages/**=kickout,user,roles[dept],perms[dept:list]
+				/shiro-oauth=oauthAuthc
+				/pages/**=user,roles[dept],perms[dept:list]
 			</value>
 		</property>
 	</bean> 
@@ -104,6 +115,13 @@
 		<property name="sessionManager" ref="sessionManager"/>
 		<property name="kickoutUrl" value="/loginShiro.action"/>
 		<property name="maxSessionCount" value="1"/> 
+	</bean>
+	
+	<!-- 13、创建OAuth登录认证过滤器 -->
+	<bean id="oauthFilter" class="cn.mldn.filter.authc.OAuthAuthenticatingFilter">
+		<property name="failureUrl" value="/oauthFailure.action"/>
+		<!-- OAuth服务器返回的参数名称 -->
+		<property name="authcodeParam" value="code"/>
 	</bean>
 	
 	<!-- 4、追加一个表单登录认证过滤器，来代替原有的登录逻辑 -->
@@ -127,8 +145,6 @@
 				<entry key="activeSessionCache" value-ref="sessionJedisConnectionFactory"/>
 				<entry key="authenticationCache" value-ref="authcJedisConnectionFactory"/>
 				<entry key="authorizationCache" value-ref="authzJedisConnectionFactory"/>
-				<entry key="retryCache" value-ref="retryJedisConnectionFactory"/>
-				<entry key="kickoutCache" value-ref="kickoutJedisConnectionFactory"/>
 			</map>
 		</property>
 	</bean>

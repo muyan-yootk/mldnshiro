@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.dubbo.config.annotation.Reference;
+
 import cn.mldn.service.IClientService;
 import cn.mldn.util.cache.shiro.RedisCache;
 import cn.mldn.vo.Client;
@@ -32,7 +34,7 @@ import cn.mldn.vo.Client;
 public class TokenAction {
 	@Value("${oauth.token.expire}") 
 	private String expire ; // 该内容的配置通过配置文件定义
-	@Resource 
+	@Reference
 	private IClientService clientService ;	// 因为需要继续验证client_id、client_secret
 	private RedisCache<Object,Object> redisCacheAuthcode ;
 	private RedisCache<Object,Object> redisCacheToken ;
