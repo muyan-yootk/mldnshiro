@@ -84,4 +84,21 @@
 		<property name="database" value="${shiro.redis.authcode.database.index}"/>
 	</bean>	
 
+	<!-- 【6 - token】配置Shiro-token-Redis缓存机制 -->
+	<bean id="tokenJedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxTotal" value="${shiro.redis.token.pool.maxTotal}"/>
+		<property name="maxIdle" value="${shiro.redis.token.pool.maxIdle}"/>
+		<property name="testOnBorrow" value="${shiro.redis.token.pool.testOnBorrow}"/>
+		<property name="maxWaitMillis" value="${shiro.redis.token.database.index}"/>
+	</bean>
+	<bean id="tokenJedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+		<property name="poolConfig" ref="tokenJedisPoolConfig"/>
+		<property name="hostName" value="${shiro.redis.token.host}"/>
+		<property name="port" value="${shiro.redis.token.port}"/>
+		<property name="password" value="${shiro.redis.token.auth}"/>
+		<property name="timeout" value="${shiro.redis.token.timeout}"/>
+		<property name="database" value="${shiro.redis.token.database.index}"/>
+	</bean>	
+
+
 </beans>

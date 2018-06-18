@@ -129,6 +129,7 @@
 				<entry key="authorizationCache" value-ref="authzJedisConnectionFactory"/>
 				<entry key="retryCache" value-ref="retryJedisConnectionFactory"/>
 				<entry key="kickoutCache" value-ref="kickoutJedisConnectionFactory"/>
+				<entry key="tokenCache" value-ref="tokenJedisConnectionFactory"/>
 			</map>
 		</property>
 	</bean>
