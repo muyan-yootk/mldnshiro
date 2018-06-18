@@ -41,7 +41,11 @@ public class RedisCacheManager implements CacheManager {
 			} else if ("kickoutCache".equals(name)) { 	// 获得session缓存activeSessionCache
 				abstractCache = new RedisCache<Object,Object>() ;
 				abstractCache.setConnectionFactory(this.connectionFactoryMap.get("kickoutCache"));
+			} else if ("authcodeCache".equals(name)) { 	// 获得session缓存authcodeCache
+				abstractCache = new RedisCache<Object,Object>() ;
+				abstractCache.setConnectionFactory(this.connectionFactoryMap.get("authcodeCache"));
 			} 
+			
 			cache = abstractCache ;
 			CACHES.put(name, cache) ; // 防止随后重复取出
 		}

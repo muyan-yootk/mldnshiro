@@ -126,9 +126,9 @@
 			<map>
 				<entry key="activeSessionCache" value-ref="sessionJedisConnectionFactory"/>
 				<entry key="authenticationCache" value-ref="authcJedisConnectionFactory"/>
-				<entry key="authorizationCache" value-ref="authzJedisConnectionFactory"/>
 				<entry key="retryCache" value-ref="retryJedisConnectionFactory"/>
 				<entry key="kickoutCache" value-ref="kickoutJedisConnectionFactory"/>
+				<entry key="authcodeCache" value-ref="authcodeJedisConnectionFactory"/>
 			</map>
 		</property>
 	</bean>

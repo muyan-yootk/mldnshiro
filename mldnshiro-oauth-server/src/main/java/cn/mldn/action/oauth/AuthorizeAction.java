@@ -2,6 +2,7 @@ package cn.mldn.action.oauth;
 
 import java.net.URI;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -14,8 +15,11 @@ import org.apache.oltu.oauth2.common.error.OAuthError;
 import org.apache.oltu.oauth2.common.message.OAuthResponse;
 import org.apache.oltu.oauth2.common.message.types.ResponseType;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.util.WebUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,12 +31,20 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.dubbo.config.annotation.Reference;
 
 import cn.mldn.service.IClientService;
+import cn.mldn.util.cache.shiro.RedisCache;
 import cn.mldn.vo.Client;
 @Controller
+@PropertySource("classpath:config/oauth.properties")
 public class AuthorizeAction {
 	@Reference
 	private IClientService clientService ;	// 注入IClientService接口对象
-	
+	@Value("${oauth.authcode.expire}") 
+	private String expire ; // 该内容的配置通过配置文件定义	
+	private RedisCache<Object,Object> redisCache ; // 进行Redis缓存注册
+	@Resource(name="cacheManager")
+	public void setCacheManager(CacheManager cacheManager) {
+		this.redisCache = (RedisCache<Object,Object>) cacheManager.getCache("authcodeCache") ;
+	}
 	@ResponseBody
 	@RequestMapping(value="/authorize" ,method=RequestMethod.GET)
 	public Object authorize(HttpServletRequest request) {
@@ -70,8 +82,9 @@ public class AuthorizeAction {
 					OAuthIssuerImpl oauthIssuer = new OAuthIssuerImpl(new MD5Generator()) ;
 					authCode = oauthIssuer.authorizationCode() ; // 生成认证码
 					// 由于每一个不同的用户请求都会生成不同的authcode，那么将生成的authcode的数据与当前用户名一起保存
+					this.redisCache.putEx(authCode, subject.getPrincipal(), this.expire) ;
 				} 
-			}
+			} 
 			// 当登录完成之后应该跳转到redirect_url所给定的路径（接入客户服务器的地址）
 			OAuthASResponse.OAuthAuthorizationResponseBuilder builder = OAuthASResponse.authorizationResponse(request,
 					HttpServletResponse.SC_FOUND);	// 构建一个回应请求的构造器（code、redirect_url跳转）
