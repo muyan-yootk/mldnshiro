@@ -42,9 +42,6 @@ public class DefaultBasicRealm extends AuthorizingRealm {
 		if (member == null) {	// 用户名不存在
 			throw new UnknownAccountException("【" + mid + "】该用户名不存在，请自行注册！	");
 		}
-		if (!member.getPassword().equals(password)) {	// 密码错误
-			throw new IncorrectCredentialsException("【" + mid + "】错误的密码无法登录！");
-		}
 		if (member.getLocked().equals(1)) {	// 账户被锁定
 			throw new LockedAccountException("【" + mid + "】该账户已经被管理员锁定，无法登录！") ;
 		}

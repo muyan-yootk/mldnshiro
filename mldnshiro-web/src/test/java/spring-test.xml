@@ -11,16 +11,7 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">  
-	<context:component-scan base-package="cn.mldn"/>
+	<context:component-scan base-package="cn.mldn.action"/>
 	<context:property-placeholder location="classpath:config/*.properties"/>
-	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
-		<bean id="serviceDefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor" 
-		class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator">
-		<property name="proxyTargetClass" value="true"/> <!-- 开启代理操作 -->
-	</bean> 
-	
-	<bean id="serviceAuthorizationAttributeSourceAdvisor" 
-		class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
-		<property name="securityManager" ref="securityManager"/>
-	</bean>  
+	<import resource="classpath:spring/spring-redis.xml"/>
 </beans>

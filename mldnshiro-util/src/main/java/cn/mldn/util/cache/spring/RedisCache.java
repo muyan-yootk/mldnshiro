@@ -1,4 +1,4 @@
-package cn.mldn.util.cache;
+package cn.mldn.util.cache.spring;
 
 import java.util.concurrent.Callable; 
 

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<!-- 【0 - Session】配置Shiro-Session-Redis缓存机制 -->
+	<bean id="sessionJedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxTotal" value="${shiro.redis.session.pool.maxTotal}"/>
+		<property name="maxIdle" value="${shiro.redis.session.pool.maxIdle}"/>
+		<property name="testOnBorrow" value="${shiro.redis.session.pool.testOnBorrow}"/>
+		<property name="maxWaitMillis" value="${shiro.redis.session.database.index}"/>
+	</bean>
+	<bean id="sessionJedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+		<property name="poolConfig" ref="sessionJedisPoolConfig"/>
+		<property name="hostName" value="${shiro.redis.session.host}"/>
+		<property name="port" value="${shiro.redis.session.port}"/>
+		<property name="password" value="${shiro.redis.session.auth}"/>
+		<property name="timeout" value="${shiro.redis.session.timeout}"/>
+		<property name="database" value="${shiro.redis.session.database.index}"/>
+	</bean> 
+	
+	<!-- 【1 - authc】配置Shiro-Authc-Redis缓存机制 -->
+	<bean id="authcJedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxTotal" value="${shiro.redis.authc.pool.maxTotal}"/>
+		<property name="maxIdle" value="${shiro.redis.authc.pool.maxIdle}"/>
+		<property name="testOnBorrow" value="${shiro.redis.authc.pool.testOnBorrow}"/>
+		<property name="maxWaitMillis" value="${shiro.redis.authc.database.index}"/>
+	</bean>
+	<bean id="authcJedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+		<property name="poolConfig" ref="sessionJedisPoolConfig"/>
+		<property name="hostName" value="${shiro.redis.authc.host}"/>
+		<property name="port" value="${shiro.redis.authc.port}"/>
+		<property name="password" value="${shiro.redis.authc.auth}"/>
+		<property name="timeout" value="${shiro.redis.authc.timeout}"/>
+		<property name="database" value="${shiro.redis.authc.database.index}"/>
+	</bean> 
+	
+	<!-- 【2 - authc】配置Shiro-Authz-Redis缓存机制 -->
+	<bean id="authzJedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxTotal" value="${shiro.redis.authz.pool.maxTotal}"/>
+		<property name="maxIdle" value="${shiro.redis.authz.pool.maxIdle}"/>
+		<property name="testOnBorrow" value="${shiro.redis.authz.pool.testOnBorrow}"/>
+		<property name="maxWaitMillis" value="${shiro.redis.authz.database.index}"/>
+	</bean>
+	<bean id="authzJedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+		<property name="poolConfig" ref="sessionJedisPoolConfig"/>
+		<property name="hostName" value="${shiro.redis.authz.host}"/>
+		<property name="port" value="${shiro.redis.authz.port}"/>
+		<property name="password" value="${shiro.redis.authz.auth}"/>
+		<property name="timeout" value="${shiro.redis.authz.timeout}"/>
+		<property name="database" value="${shiro.redis.authz.database.index}"/>
+	</bean> 
+</beans>
