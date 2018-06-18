@@ -21,6 +21,9 @@
 </c:if>
 <c:if test="${msg == 'org.apache.shiro.authc.LockedAccountException'}">
 	该用户已经被锁定！
+</c:if>
+<c:if test="${param.kickmsg != null}">
+	您已经在其它设备上进行了登录，如果不是您本人操作，请修改密码！
 </c:if> 
 </h1>
 ${error}

@@ -66,5 +66,21 @@
 		<property name="timeout" value="${shiro.redis.retry.timeout}"/>
 		<property name="database" value="${shiro.redis.retry.database.index}"/>
 	</bean>	
-	
+
+	<!-- 【4 - kickout】配置Shiro-Kick-Redis缓存机制 -->
+	<bean id="kickoutJedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxTotal" value="${shiro.redis.kickout.pool.maxTotal}"/>
+		<property name="maxIdle" value="${shiro.redis.kickout.pool.maxIdle}"/>
+		<property name="testOnBorrow" value="${shiro.redis.kickout.pool.testOnBorrow}"/>
+		<property name="maxWaitMillis" value="${shiro.redis.kickout.database.index}"/>
+	</bean>
+	<bean id="kickoutJedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+		<property name="poolConfig" ref="kickoutJedisPoolConfig"/>
+		<property name="hostName" value="${shiro.redis.kickout.host}"/>
+		<property name="port" value="${shiro.redis.kickout.port}"/>
+		<property name="password" value="${shiro.redis.kickout.auth}"/>
+		<property name="timeout" value="${shiro.redis.kickout.timeout}"/>
+		<property name="database" value="${shiro.redis.kickout.database.index}"/>
+	</bean>	
+
 </beans>

@@ -85,15 +85,25 @@
 				<entry key="authc" value-ref="formAuthenticationFilter"/>
 				<!-- 追加logout的过滤器配置 -->
 				<entry key="logout" value-ref="logoutFilter"/>
+				<!-- 追加重复登录的并发剔除过滤器 -->
+				<entry key="kickout" value-ref="kickoutFilter"/>
 			</map>
 		</property>
 		<property name="filterChainDefinitions">
 			<value>
 				/logout.shiro=logout
 				/loginShiro.action=authc
-				/pages/**=user,roles[dept],perms[dept:list]
+				/pages/**=kickout,user,roles[dept],perms[dept:list]
 			</value>
 		</property>
+	</bean> 
+	
+	<!-- 13、配置剔除的过滤器 -->
+	<bean id="kickoutFilter" class="cn.mldn.filter.authc.KickoutSessionControlFilter">
+		<property name="cacheManager" ref="cacheManager"/>
+		<property name="sessionManager" ref="sessionManager"/>
+		<property name="kickoutUrl" value="/loginShiro.action"/>
+		<property name="maxSessionCount" value="1"/> 
 	</bean>
 	
 	<!-- 4、追加一个表单登录认证过滤器，来代替原有的登录逻辑 -->
@@ -118,6 +128,7 @@
 				<entry key="authenticationCache" value-ref="authcJedisConnectionFactory"/>
 				<entry key="authorizationCache" value-ref="authzJedisConnectionFactory"/>
 				<entry key="retryCache" value-ref="retryJedisConnectionFactory"/>
+				<entry key="kickoutCache" value-ref="kickoutJedisConnectionFactory"/>
 			</map>
 		</property>
 	</bean>
