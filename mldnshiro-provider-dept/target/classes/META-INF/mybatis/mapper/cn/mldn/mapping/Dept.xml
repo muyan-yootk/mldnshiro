@@ -12,4 +12,7 @@
 	<select id="findAll" resultType="Dept">
 		<include refid="selectBase"/>
 	</select>  
+	<insert id="doCreate" parameterType="Dept">
+		INSERT INTO dept(deptno,dname) VALUES (#{deptno},#{dname}) ; 
+	</insert>
 </mapper> 

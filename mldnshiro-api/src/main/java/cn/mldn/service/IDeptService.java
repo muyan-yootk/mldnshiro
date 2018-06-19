@@ -7,4 +7,5 @@ import cn.mldn.vo.Dept;
 public interface IDeptService {
 	public Dept get(long id) ;
 	public List<Dept> list() ;
+	public boolean add(Dept dept) ;
 }

@@ -14,6 +14,10 @@ public class DeptServiceImpl implements IDeptService {
 	@Autowired
 	private IDeptDAO deptDAO ;
 	@Override
+	public boolean add(Dept dept) {
+		return this.deptDAO.doCreate(dept);
+	}
+	@Override
 	public Dept get(long id) {
 		return this.deptDAO.findById(id);
 	}

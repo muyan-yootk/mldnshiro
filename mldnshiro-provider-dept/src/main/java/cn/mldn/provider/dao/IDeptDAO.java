@@ -7,4 +7,5 @@ import cn.mldn.vo.Dept;
 public interface IDeptDAO {
 	public Dept findById(Long id) ;
 	public List<Dept> findAll() ;
+	public boolean doCreate(Dept dept) ;
 }
